@@ -1,5 +1,4 @@
 use playlist_project::app::app;
-// use playlist_project::app::test_util_app;
 
 #[cfg(test)]
 pub mod test_util_app {
