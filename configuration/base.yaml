@@ -1,0 +1,10 @@
+application:
+  port: 3000
+  host: 0.0.0.0
+database:
+  host: "127.0.0.1"
+  port: 5432
+  username: "postgres"
+  password: "password"
+  database_name: "playlist_project"
+  require_ssl: false

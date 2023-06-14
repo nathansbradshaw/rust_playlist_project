@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=password
+    ports:
+      - '5433:5432'
+  # playlist_api:
+  #   environment:
+  #     - DB_URI=postgresql://user:password@postgres
+      # - PLAYLIST_PORT=3000
+      # - PLAYLIST_ADDRESS=0.0.0.0
+  #   build:
+  #     context: ../
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - '3000:3000'
+  #   depends_on:
+  #     - "postgres"
