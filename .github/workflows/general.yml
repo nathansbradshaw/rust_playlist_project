@@ -9,12 +9,11 @@ on:
       - staging
       - master
   pull_request:
-    types: [opened, synchronize, reopened]
+    # types: [opened, synchronize, reopened]
     branches:
       - develop
       - staging
       - master
-      - **
 env:
   CARGO_TERM_COLOR: always
   SQLX_VERSION: 0.6.2
