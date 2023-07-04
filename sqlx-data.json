@@ -1,0 +1,42 @@
+{
+  "db": "PostgreSQL",
+  "60b525c178f2cad080563ea589e2c3ebf5f59be1ca8cafbc4dad7346124c92a4": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        UPDATE users\n        SET password_hash = $1\n        WHERE id = $2\n        "
+  },
+  "dd9557809f59c4a4e31d2ba38e835f55e67e0ebc6486fe96a1c82312626856d5": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "password_hash",
+          "ordinal": 1,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        true
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "\n        SELECT id, password_hash\n        FROM users\n        WHERE email = $1\n        "
+  }
+}
