@@ -6,8 +6,11 @@ use std::{
 use configuration::get_configuration;
 use sqlx::{postgres::PgPoolOptions, PgPool};
 mod app;
+mod authentication;
 mod configuration;
 mod routes;
+mod telemetry;
+mod tools;
 
 #[tokio::main]
 pub async fn main() -> Result<(), anyhow::Error> {
