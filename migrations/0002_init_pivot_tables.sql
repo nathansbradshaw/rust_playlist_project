@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS user_playlists (
 
 CREATE TABLE IF NOT EXISTS artist_images (
     artist_id TEXT NOT NULL,
-    image_id SERIAL NOT NULL,
+    image_id uuid NOT NULL,
     PRIMARY KEY (artist_id, image_id),
     CONSTRAINT fk_artist FOREIGN KEY(artist_id) REFERENCES artists(spotify_id),
     CONSTRAINT fk_image FOREIGN KEY(image_id) REFERENCES images(id)
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS artist_images (
 
 CREATE TABLE IF NOT EXISTS album_images (
     album_id TEXT NOT NULL,
-    image_id SERIAL NOT NULL,
+    image_id uuid NOT NULL,
     PRIMARY KEY (album_id, image_id),
     CONSTRAINT fk_album FOREIGN KEY(album_id) REFERENCES albums(spotify_id),
     CONSTRAINT fk_image FOREIGN KEY(image_id) REFERENCES images(id)
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS album_images (
 
 CREATE TABLE IF NOT EXISTS playlist_images (
     playlist_id TEXT NOT NULL,
-    image_id SERIAL NOT NULL,
+    image_id uuid NOT NULL,
     PRIMARY KEY (playlist_id, image_id),
     CONSTRAINT fk_playlist FOREIGN KEY(playlist_id) REFERENCES playlists(spotify_id),
     CONSTRAINT fk_image FOREIGN KEY(image_id) REFERENCES images(id)
