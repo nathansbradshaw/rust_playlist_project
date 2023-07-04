@@ -10,7 +10,7 @@ mod configuration;
 mod routes;
 
 #[tokio::main]
-pub async fn main() -> Result<(), ()> {
+pub async fn main() -> Result<(), anyhow::Error> {
     let configuration = get_configuration().expect("Failed to read configuration.");
     let connection_pool = PgPoolOptions::new()
         .acquire_timeout(std::time::Duration::from_secs(2))

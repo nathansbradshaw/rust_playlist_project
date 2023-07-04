@@ -1,9 +1,11 @@
 CREATE TABLE IF NOT EXISTS users (
-    id SERIAL PRIMARY KEY,
+    id uuid NOT NULL,
+    PRIMARY KEY (id),
     date_created TIMESTAMP NOT NULL DEFAULT current_timestamp,
     last_updated TIMESTAMP NOT NULL DEFAULT current_timestamp,
     username TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
+    password_hash TEXT,
     spotify_id TEXT NOT NULL UNIQUE,
     access_token TEXT,
     spotify_access_token TEXT,
@@ -13,7 +15,8 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS playlists (
-    id SERIAL PRIMARY KEY,
+    id uuid NOT NULL,
+    PRIMARY KEY (id),
     spotify_id TEXT NOT NULL UNIQUE,
     name TEXT NOT NULL,
     description TEXT,
@@ -26,7 +29,8 @@ CREATE TABLE IF NOT EXISTS playlists (
 );
 
 CREATE TABLE IF NOT EXISTS artists (
-    id SERIAL PRIMARY KEY,
+    id uuid NOT NULL,
+    PRIMARY KEY (id),
     spotify_id TEXT NOT NULL UNIQUE,
     name TEXT NOT NULL,
     href TEXT NOT NULL,
@@ -34,7 +38,8 @@ CREATE TABLE IF NOT EXISTS artists (
 );
 
 CREATE TABLE IF NOT EXISTS albums (
-    id SERIAL PRIMARY KEY,
+    id uuid NOT NULL,
+    PRIMARY KEY (id),
     spotify_id TEXT NOT NULL UNIQUE,
     name TEXT NOT NULL,
     uri TEXT NOT NULL,
@@ -42,14 +47,16 @@ CREATE TABLE IF NOT EXISTS albums (
 );
 
 CREATE TABLE IF NOT EXISTS images (
-    id SERIAL PRIMARY KEY,
+    id uuid NOT NULL,
+    PRIMARY KEY (id),
     url TEXT NOT NULL,
     height INTEGER,
     width INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS tracks (
-    id SERIAL PRIMARY KEY,
+    id uuid NOT NULL,
+    PRIMARY KEY (id),
     spotify_id TEXT NOT NULL UNIQUE,
     href TEXT NOT NULL,
     spotify_uri TEXT NOT NULL,
@@ -59,7 +66,8 @@ CREATE TABLE IF NOT EXISTS tracks (
 );
 
 CREATE TABLE IF NOT EXISTS comment (
-    id SERIAL PRIMARY KEY,
+    id uuid NOT NULL,
+    PRIMARY KEY (id),
     user_id TEXT NOT NULL,
     playlist_id TEXT NOT NULL,
     track_id TEXT NOT NULL,
