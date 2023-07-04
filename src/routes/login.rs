@@ -1,6 +1,7 @@
 use axum::{
     response::{AppendHeaders, IntoResponse},
-    Extension, Form,
+    routing::post,
+    Extension, Form, Router,
 };
 use hyper::{header::LOCATION, StatusCode};
 use secrecy::Secret;
@@ -17,13 +18,17 @@ pub struct LoginForm {
     password: Secret<String>,
 }
 
+pub fn routes() -> Router {
+    Router::new().route("/login", post(login_post))
+}
+
 pub async fn login_post(
-    Form(LoginForm): Form<LoginForm>,
     Extension(pool): Extension<PgPool>,
+    Form(login_form): Form<LoginForm>,
 ) -> Result<impl IntoResponse, impl IntoResponse> {
     let credentials = Credentials {
-        email: LoginForm.email,
-        password: LoginForm.password,
+        email: login_form.email,
+        password: login_form.password,
     };
 
     tracing::Span::current().record("username", &tracing::field::display(&credentials.email));

@@ -1,8 +1,5 @@
 use axum::{http::Request, Extension, Router};
-use axum_session::{
-    Key, SecurityMode, Session, SessionConfig, SessionLayer, SessionMode, SessionPgPool,
-    SessionStore,
-};
+use axum_session::{Key, SecurityMode, SessionConfig, SessionPgPool, SessionStore};
 
 use sqlx::PgPool;
 use tower::ServiceBuilder;
@@ -14,7 +11,7 @@ use tower_http::{
 use tracing::Level;
 use uuid::Uuid;
 
-use crate::routes::health_check;
+use crate::routes::{health_check, login};
 
 #[derive(Clone)]
 struct MakeRequestUuid;
@@ -61,6 +58,7 @@ pub async fn app(pool: PgPool) -> Router {
 
     Router::new()
         .layer(Extension(pool))
+        .nest("/api", login::routes())
         .nest("/api", health_check::routes())
         .layer(
             // from https://docs.rs/tower-http/0.2.5/tower_http/request_id/index.html#using-trace

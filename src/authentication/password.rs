@@ -1,9 +1,10 @@
-use crate::telemetry::spawn_blocking_with_tracing;
 use anyhow::Context;
 use argon2::password_hash::SaltString;
 use argon2::{Algorithm, Argon2, Params, PasswordHash, PasswordHasher, PasswordVerifier, Version};
 use secrecy::{ExposeSecret, Secret};
 use sqlx::PgPool;
+
+use crate::telemetry::spawn_blocking_with_tracing;
 
 #[derive(thiserror::Error, Debug)]
 pub enum AuthError {
@@ -70,10 +71,10 @@ pub async fn validate_credentials(
         .map_err(AuthError::InvalidCredentials)
 }
 
-// #[tracing::instrument(
-//     name = "Validate credentials",
-//     skip(expected_password_hash, password_candidate)
-// )]
+#[tracing::instrument(
+    name = "Validate credentials",
+    skip(expected_password_hash, password_candidate)
+)]
 fn verify_password_hash(
     expected_password_hash: Secret<Option<String>>,
     password_candidate: Secret<String>,
@@ -127,5 +128,6 @@ fn compute_password_hash(password: Secret<String>) -> Result<Secret<String>, any
     )
     .hash_password(password.expose_secret().as_bytes(), &salt)?
     .to_string();
+
     Ok(Secret::new(password_hash))
 }
