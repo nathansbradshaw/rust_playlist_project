@@ -13,6 +13,20 @@
     },
     "query": "\n        UPDATE users\n        SET password_hash = $1\n        WHERE id = $2\n        "
   },
+  "da8c6cc9ee03450afb507a7c6d19f80298bee8169f85cd00500a9ac022344f2a": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Text",
+          "Text"
+        ]
+      }
+    },
+    "query": "\n    INSERT INTO users (id, email, password_hash)\n    VALUES ($1, $2, $3)\n    "
+  },
   "dd9557809f59c4a4e31d2ba38e835f55e67e0ebc6486fe96a1c82312626856d5": {
     "describe": {
       "columns": [
