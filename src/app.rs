@@ -26,14 +26,14 @@ impl MakeRequestId for MakeRequestUuid {
 
 pub async fn app(pool: PgPool) -> Router {
     // enable console logging
-    use std::sync::Once;
+    // use std::sync::Once;
 
-    static START: Once = Once::new();
+    // static START: Once = Once::new();
 
-    START.call_once(|| {
-        // run initialization here
-        tracing_subscriber::fmt::init();
-    });
+    // START.call_once(|| {
+    //     // run initialization here
+    //     tracing_subscriber::fmt::init();
+    // });
 
     // TODO find a better place for this
     let session_config = SessionConfig::default()
