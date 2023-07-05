@@ -40,6 +40,12 @@ pub async fn register_post(
         .map_err(RegisterError::ValidationError)?;
 
     // TODO change this from unwrap
+    register_user(new_registration, pool).await;
+
+    Ok(StatusCode::OK)
+}
+
+async fn register_user(new_registration: NewRegistration, pool: PgPool) -> () {
     let password_hash = spawn_blocking_with_tracing(move || {
         compute_password_hash(new_registration.password.into())
     })
@@ -48,7 +54,7 @@ pub async fn register_post(
     .unwrap();
 
     let user_id = Uuid::new_v4();
-    sqlx::query!(
+    let _ = sqlx::query!(
         r#"
     INSERT INTO users (id, email, password_hash)
     VALUES ($1, $2, $3)
@@ -58,10 +64,7 @@ pub async fn register_post(
         password_hash.expose_secret()
     )
     .execute(&pool)
-    .await
-    .unwrap();
-
-    Ok(StatusCode::OK)
+    .await;
 }
 
 #[derive(thiserror::Error)]
