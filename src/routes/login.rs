@@ -31,7 +31,9 @@ pub async fn login_post(
         password: login_form.password,
     };
 
-    tracing::Span::current().record("username", &tracing::field::display(&credentials.email));
+    println!("LOGIN");
+
+    tracing::Span::current().record("email", &tracing::field::display(&credentials.email));
     match validate_credentials(credentials, &pool).await {
         Ok(id) => {
             tracing::Span::current().record("user_id", &tracing::field::display(&id));

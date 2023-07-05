@@ -4,5 +4,6 @@ pub mod configuration;
 pub mod routes;
 // pub mod startup;
 pub mod authentication;
+pub mod domain;
 pub mod telemetry;
 pub mod tools;

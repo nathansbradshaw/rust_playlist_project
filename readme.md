@@ -14,7 +14,7 @@ sqlx migrate run
 ```
 
 ```shell
-cargo watch -q -c -w src/ -x run
+cargo watch -q -c -w src/ -x run  -E RUST_LOG=trace
 ```
 
 in another terminal if you want to use "quick dev"

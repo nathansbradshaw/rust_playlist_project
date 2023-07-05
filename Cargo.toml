@@ -50,3 +50,11 @@ tracing-subscriber = "0.3.17"
 thiserror = "1.0.40"
 rand = { version = "0.8.5", features=["std_rng"] }
 axum_session = { version = "0.2.3", features = [ "postgres-rustls"] }
+validator = "0.16.1"
+zeroize_derive = "1.4.2"
+
+[dev-dependencies]
+fake = "2.6.1"
+claims = "0.7.1"
+quickcheck = "1.0.3"
+quickcheck_macros = "1.0.0"
