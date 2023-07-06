@@ -57,21 +57,21 @@ async fn register_return_400_bad_password() {
     assert_eq!(Some(""), Some(response.text().await.unwrap().as_str()));
 }
 
-// #[cfg(test)]
-// #[tokio::test]
-// async fn register_return_200() {
-//     let (client, address, _) = common::test_util::setup().await;
+#[cfg(test)]
+#[tokio::test]
+async fn register_return_200() {
+    let (client, address, _) = common::test_util::setup().await;
 
-//     let params = [("email", "test@example.com"), ("password", "12345678")];
+    let params = [("email", "test@example.com"), ("password", "12345678")];
 
-//     let response = client
-//         .post(&format!("{}/api/register", &address))
-//         .form(&params)
-//         .send()
-//         .await
-//         .expect("Failed to execute request");
+    let response = client
+        .post(&format!("{}/api/register", &address))
+        .form(&params)
+        .send()
+        .await
+        .expect("Failed to execute request");
 
-//     assert!(response.status().is_success());
-//     assert_eq!(response.status().as_u16(), 400);
-//     assert_eq!(Some(""), Some(response.text().await.unwrap().as_str()));
-// }
+    // assert!(response.status().is_success());
+    assert_eq!(response.status().as_u16(), 200);
+    assert_eq!(Some(""), Some(response.text().await.unwrap().as_str()));
+}

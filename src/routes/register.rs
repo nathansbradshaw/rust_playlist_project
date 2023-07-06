@@ -1,15 +1,15 @@
-use axum::{response::IntoResponse, routing::post, Extension, Form, Router};
-use hyper::StatusCode;
-use secrecy::{ExposeSecret, Secret};
-use sqlx::PgPool;
-use uuid::Uuid;
-
 use crate::{
     authentication::compute_password_hash,
     domain::{NewRegistration, UserEmail, UserPassword},
     telemetry::spawn_blocking_with_tracing,
     tools::error_chain_fmt,
 };
+use anyhow::{Context, Result};
+use axum::{response::IntoResponse, routing::post, Extension, Form, Router};
+use hyper::StatusCode;
+use secrecy::{ExposeSecret, Secret};
+use sqlx::{postgres::PgQueryResult, PgPool};
+use uuid::Uuid;
 
 pub fn routes() -> Router {
     Router::new().route("/register", post(register_post))
@@ -39,22 +39,29 @@ pub async fn register_post(
         .try_into()
         .map_err(RegisterError::ValidationError)?;
 
-    // TODO change this from unwrap
-    register_user(new_registration, pool).await;
+    register_user(new_registration, pool).await?;
 
     Ok(StatusCode::OK)
 }
 
-async fn register_user(new_registration: NewRegistration, pool: PgPool) -> () {
+async fn register_user(new_registration: NewRegistration, pool: PgPool) -> Result<PgQueryResult> {
     let password_hash = spawn_blocking_with_tracing(move || {
         compute_password_hash(new_registration.password.into())
     })
     .await
-    .unwrap()
-    .unwrap();
+    .context("Error hashing password")
+    .map_err(RegisterError::from)?
+    .context("Error hashing password")
+    .map_err(RegisterError::from)?;
 
     let user_id = Uuid::new_v4();
-    let _ = sqlx::query!(
+    println!(
+        "password hash {}, {}, {:?}",
+        password_hash.expose_secret(),
+        new_registration.email.as_ref(),
+        user_id.as_ref()
+    );
+    let result = sqlx::query!(
         r#"
     INSERT INTO users (id, email, password_hash)
     VALUES ($1, $2, $3)
@@ -64,7 +71,12 @@ async fn register_user(new_registration: NewRegistration, pool: PgPool) -> () {
         password_hash.expose_secret()
     )
     .execute(&pool)
-    .await;
+    .await
+    .unwrap();
+    // .context("Failed to register user")
+    // .map_err(RegisterError::from)?;
+
+    Ok(result)
 }
 
 #[derive(thiserror::Error)]

@@ -16,13 +16,13 @@ impl UserPassword {
 
 impl AsRef<str> for UserPassword {
     fn as_ref(&self) -> &str {
-        &self.0.expose_secret()
+        self.0.expose_secret()
     }
 }
 
-impl Into<Secret<String>> for UserPassword {
-    fn into(self) -> Secret<String> {
-        self.0.to_owned()
+impl From<UserPassword> for Secret<String> {
+    fn from(val: UserPassword) -> Self {
+        val.0
     }
 }
 
