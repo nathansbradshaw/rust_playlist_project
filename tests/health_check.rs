@@ -1,7 +1,7 @@
 mod common;
-#[tokio::test]
-async fn health_check_works() {
-    let (client, address, _) = common::test_util::setup().await;
+#[sqlx::test]
+async fn health_check_works(pool: sqlx::Pool<sqlx::Postgres>) {
+    let (client, address, _) = common::test_util::setup(pool).await;
 
     let response = client
         .get(&format!("{}/api/health", &address))

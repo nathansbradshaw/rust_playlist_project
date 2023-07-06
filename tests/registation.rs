@@ -1,9 +1,9 @@
 mod common;
 
 #[cfg(test)]
-#[tokio::test]
-async fn register_return_415_no_form_data() {
-    let (client, address, _) = common::test_util::setup().await;
+#[sqlx::test]
+async fn register_return_415_no_form_data(pool: sqlx::Pool<sqlx::Postgres>) {
+    let (client, address, _) = common::test_util::setup(pool).await;
 
     let response = client
         .post(&format!("{}/api/register", &address))
@@ -20,9 +20,9 @@ async fn register_return_415_no_form_data() {
 }
 
 #[cfg(test)]
-#[tokio::test]
-async fn register_return_400_bad_email() {
-    let (client, address, _) = common::test_util::setup().await;
+#[sqlx::test]
+async fn register_return_400_bad_email(pool: sqlx::Pool<sqlx::Postgres>) {
+    let (client, address, _) = common::test_util::setup(pool).await;
 
     let params = [("email", "test"), ("password", "12345678")];
 
@@ -39,9 +39,9 @@ async fn register_return_400_bad_email() {
 }
 
 #[cfg(test)]
-#[tokio::test]
-async fn register_return_400_bad_password() {
-    let (client, address, _) = common::test_util::setup().await;
+#[sqlx::test]
+async fn register_return_400_bad_password(pool: sqlx::Pool<sqlx::Postgres>) {
+    let (client, address, _) = common::test_util::setup(pool).await;
 
     let params = [("email", "test@example.com"), ("password", "123")];
 
@@ -58,9 +58,9 @@ async fn register_return_400_bad_password() {
 }
 
 #[cfg(test)]
-#[tokio::test]
-async fn register_return_200() {
-    let (client, address, _) = common::test_util::setup().await;
+#[sqlx::test]
+async fn register_return_200(pool: sqlx::Pool<sqlx::Postgres>) {
+    let (client, address, _) = common::test_util::setup(pool).await;
 
     let params = [("email", "test@example.com"), ("password", "12345678")];
 
@@ -71,7 +71,7 @@ async fn register_return_200() {
         .await
         .expect("Failed to execute request");
 
-    // assert!(response.status().is_success());
+    assert!(response.status().is_success());
     assert_eq!(response.status().as_u16(), 200);
     assert_eq!(Some(""), Some(response.text().await.unwrap().as_str()));
 }
