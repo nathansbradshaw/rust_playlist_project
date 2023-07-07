@@ -55,12 +55,7 @@ async fn register_user(new_registration: NewRegistration, pool: PgPool) -> Resul
     .map_err(RegisterError::from)?;
 
     let user_id = Uuid::new_v4();
-    println!(
-        "password hash {}, {}, {:?}",
-        password_hash.expose_secret(),
-        new_registration.email.as_ref(),
-        user_id.as_ref()
-    );
+
     let result = sqlx::query!(
         r#"
     INSERT INTO users (id, email, password_hash)

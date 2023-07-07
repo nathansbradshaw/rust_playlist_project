@@ -22,6 +22,7 @@ pub fn routes() -> Router {
     Router::new().route("/login", post(login_post))
 }
 
+//TODO this needs reworked
 pub async fn login_post(
     Extension(pool): Extension<PgPool>,
     Form(login_form): Form<LoginForm>,

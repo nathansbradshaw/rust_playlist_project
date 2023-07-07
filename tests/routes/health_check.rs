@@ -1,4 +1,6 @@
-mod common;
+use crate::common;
+
+#[cfg(test)]
 #[sqlx::test]
 async fn health_check_works(pool: sqlx::Pool<sqlx::Postgres>) {
     let (client, address, _) = common::test_util::setup(pool).await;

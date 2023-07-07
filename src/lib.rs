@@ -1,9 +1,11 @@
 pub mod app;
 pub mod configuration;
 // pub mod domain;
-pub mod routes;
+pub mod server;
 // pub mod startup;
 pub mod authentication;
+pub mod database;
 pub mod domain;
+pub mod error;
 pub mod telemetry;
 pub mod tools;

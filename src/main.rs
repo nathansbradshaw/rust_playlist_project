@@ -8,8 +8,10 @@ use sqlx::{postgres::PgPoolOptions, PgPool};
 mod app;
 mod authentication;
 mod configuration;
+mod database;
 mod domain;
-mod routes;
+mod error;
+mod server;
 mod telemetry;
 mod tools;
 
