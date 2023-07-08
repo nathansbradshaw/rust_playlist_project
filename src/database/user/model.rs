@@ -50,4 +50,13 @@ pub trait UsersRepository {
         -> anyhow::Result<User>;
 
     async fn get_user_by_email(&self, email: &str) -> anyhow::Result<Option<User>>;
+
+    async fn get_user_by_id(&self, id: Uuid) -> anyhow::Result<User>;
+
+    async fn update_user(
+        &self,
+        id: Uuid,
+        email: String,
+        password: Option<String>,
+    ) -> anyhow::Result<User>;
 }

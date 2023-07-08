@@ -7,7 +7,10 @@ use sqlx::PgPool;
 use crate::{
     config::AppConfig,
     server::{
-        services::user_services::UsersService,
+        services::{
+            session_services::{DynSessionsService, SessionsService},
+            user_services::UsersService,
+        },
         utils::{
             argon_utils::{ArgonSecurityUtil, DynArgonUtil},
             jwt_utils::JwtTokenUtil,
@@ -18,7 +21,7 @@ use crate::{
 pub struct Services {
     pub jwt_util: DynJwtUtil,
     pub users: DynUsersService,
-    // pub sessions: DynSessionsService,
+    pub sessions: DynSessionsService,
 }
 
 use self::user_services::DynUsersService;
@@ -29,26 +32,26 @@ impl Services {
     pub fn new(db: PgPool, config: Arc<AppConfig>) -> Self {
         // TODO change this to use tracing
         println!("Setting up services");
-        let security_service = Arc::new(ArgonSecurityUtil::new(config.clone())) as DynArgonUtil;
+        let security_service = Arc::new(ArgonSecurityUtil::new()) as DynArgonUtil;
         let jwt_util = Arc::new(JwtTokenUtil::new(config)) as DynJwtUtil;
 
         let repository = Arc::new(db);
 
         // TODO initialize services
-        // let sessions = Arc::new(SessionsService::new(repository.clone(), jwt_util.clone()))
-        //     as DynSessionsService;
+        let sessions = Arc::new(SessionsService::new(repository.clone(), jwt_util.clone()))
+            as DynSessionsService;
 
         let users = Arc::new(UsersService::new(
-            repository.clone(),
+            repository,
             security_service,
             jwt_util.clone(),
-            // sessions.clone(),
+            sessions.clone(),
         )) as DynUsersService;
 
         Self {
             jwt_util,
             users,
-            // sessions,
+            sessions,
         }
     }
 }

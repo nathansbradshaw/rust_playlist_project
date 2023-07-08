@@ -6,17 +6,12 @@ use std::{
 
 use crate::config::AppConfig;
 use clap::Parser;
-use configuration::get_configuration;
 use dotenvy::dotenv;
 
-use sqlx::{
-    postgres::{PgConnectOptions, PgPoolOptions, PgSslMode},
-    PgPool,
-};
+use sqlx::postgres::{PgConnectOptions, PgPoolOptions, PgSslMode};
 mod app;
 mod authentication;
 mod config;
-mod configuration;
 mod database;
 mod domain;
 mod server;
@@ -36,6 +31,7 @@ pub async fn main() -> Result<(), anyhow::Error> {
                 .username(&config.postgres_user)
                 .password(&config.postgres_password)
                 .port(config.postgres_port)
+                .database(&config.postgres_db)
                 .ssl_mode(match config.postgres_require_ssl {
                     true => PgSslMode::Require,
                     _ => PgSslMode::Prefer,
@@ -46,7 +42,7 @@ pub async fn main() -> Result<(), anyhow::Error> {
         IpAddr::from_str(&config.application_host).expect("Failed to get host"),
         config.application_port,
     );
-    run_db_migrations(&connection_pool).await;
+    // run_db_migrations(&connection_pool).await;
 
     let app = app::app(connection_pool, config).await;
 
@@ -58,9 +54,9 @@ pub async fn main() -> Result<(), anyhow::Error> {
     Ok(())
 }
 
-async fn run_db_migrations(pool: &PgPool) {
-    sqlx::migrate!()
-        .run(pool)
-        .await
-        .expect("Unable to run migration!");
-}
+// async fn run_db_migrations(pool: &PgPool) {
+//     sqlx::migrate!()
+//         .run(pool)
+//         .await
+//         .expect("Unable to run migration!");
+// }

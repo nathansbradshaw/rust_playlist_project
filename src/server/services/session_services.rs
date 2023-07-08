@@ -1,7 +1,6 @@
 use async_trait::async_trait;
-
+use sqlx::types::chrono::Utc;
 use std::sync::Arc;
-use std::time::{Duration, SystemTime};
 use tracing::info;
 use uuid::Uuid;
 
@@ -44,8 +43,7 @@ impl SessionsServiceTrait for SessionsService {
         let user_agent = request.user_agent.unwrap();
         // let from_now = Duration::from_secs(604800);
         // let expired_future_time = SystemTime::now().checked_add(from_now).unwrap();
-        let exp: chrono::NaiveDateTime =
-            (chrono::Utc::now() + chrono::Duration::days(7)).naive_utc();
+        let exp: chrono::DateTime<Utc> = chrono::Utc::now() + chrono::Duration::days(7);
 
         let created_session = self
             .repository

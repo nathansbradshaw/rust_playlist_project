@@ -1,5 +1,6 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE IF NOT EXISTS users (
-    id uuid NOT NULL,
+    id uuid DEFAULT uuid_generate_v4(),
     PRIMARY KEY (id),
     date_created TIMESTAMP NOT NULL DEFAULT current_timestamp,
     last_updated TIMESTAMP NOT NULL DEFAULT current_timestamp,
@@ -15,7 +16,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS playlists (
-    id uuid NOT NULL,
+    id uuid DEFAULT uuid_generate_v4(),
     PRIMARY KEY (id),
     spotify_id TEXT NOT NULL UNIQUE,
     name TEXT NOT NULL,
@@ -29,7 +30,7 @@ CREATE TABLE IF NOT EXISTS playlists (
 );
 
 CREATE TABLE IF NOT EXISTS artists (
-    id uuid NOT NULL,
+    id uuid DEFAULT uuid_generate_v4(),
     PRIMARY KEY (id),
     spotify_id TEXT NOT NULL UNIQUE,
     name TEXT NOT NULL,
@@ -38,7 +39,7 @@ CREATE TABLE IF NOT EXISTS artists (
 );
 
 CREATE TABLE IF NOT EXISTS albums (
-    id uuid NOT NULL,
+    id uuid DEFAULT uuid_generate_v4(),
     PRIMARY KEY (id),
     spotify_id TEXT NOT NULL UNIQUE,
     name TEXT NOT NULL,
@@ -47,7 +48,7 @@ CREATE TABLE IF NOT EXISTS albums (
 );
 
 CREATE TABLE IF NOT EXISTS images (
-    id uuid NOT NULL,
+    id uuid DEFAULT uuid_generate_v4(),
     PRIMARY KEY (id),
     url TEXT NOT NULL,
     height INTEGER,
@@ -55,7 +56,7 @@ CREATE TABLE IF NOT EXISTS images (
 );
 
 CREATE TABLE IF NOT EXISTS tracks (
-    id uuid NOT NULL,
+    id uuid DEFAULT uuid_generate_v4(),
     PRIMARY KEY (id),
     spotify_id TEXT NOT NULL UNIQUE,
     href TEXT NOT NULL,
@@ -66,7 +67,7 @@ CREATE TABLE IF NOT EXISTS tracks (
 );
 
 CREATE TABLE IF NOT EXISTS comment (
-    id uuid NOT NULL,
+    id uuid DEFAULT uuid_generate_v4(),
     PRIMARY KEY (id),
     user_id TEXT NOT NULL,
     playlist_id TEXT NOT NULL,

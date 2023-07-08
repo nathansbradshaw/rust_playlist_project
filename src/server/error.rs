@@ -38,18 +38,18 @@ pub enum Error {
     Forbidden,
     #[error("{0}")]
     NotFound(String),
-    #[error("{0}")]
-    ApplicationStartup(String),
-    #[error("{0}")]
-    BadRequest(String),
-    #[error("unexpected error has occurred")]
-    InternalServerError,
+    // #[error("{0}")]
+    // ApplicationStartup(String),
+    // #[error("{0}")]
+    // BadRequest(String),
+    // #[error("unexpected error has occurred")]
+    // InternalServerError,
     #[error("{0}")]
     InternalServerErrorWithContext(String),
     #[error("{0}")]
     ObjectConflict(String),
-    #[error("unprocessable request has occurred")]
-    UnprocessableEntity { errors: ErrorMap },
+    // #[error("unprocessable request has occurred")]
+    // UnprocessableEntity { errors: ErrorMap },
     #[error(transparent)]
     ValidationError(#[from] ValidationErrors),
     #[error(transparent)]
@@ -75,13 +75,13 @@ impl Error {
                             let params: Vec<Cow<'static, str>> = error
                                 .params
                                 .iter()
-                                .filter(|(key, _value)| key.to_owned() != "value")
+                                .filter(|(key, _value)| *key != "value")
                                 .map(|(key, value)| {
-                                    Cow::from(format!("{} value is {}", key, value.to_string()))
+                                    Cow::from(format!("{} value is {}", key, value))
                                 })
                                 .collect();
 
-                            if params.len() >= 1 {
+                            if !params.is_empty() {
                                 Cow::from(params.join(", "))
                             } else {
                                 Cow::from(format!("{} is required", field_property))

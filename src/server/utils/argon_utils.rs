@@ -1,11 +1,11 @@
 use anyhow::Context;
 use argon2::password_hash::SaltString;
 use argon2::{Algorithm, Argon2, Params, PasswordHash, PasswordHasher, PasswordVerifier, Version};
-use secrecy::{ExposeSecret, Secret};
+// use secrecy::{ExposeSecret, Secret};
 
 use std::sync::Arc;
 
-use crate::config::AppConfig;
+// use crate::config::AppConfig;
 use crate::server::error::{AppResult, Error};
 
 /// A security service for handling JWT authentication.
@@ -22,12 +22,17 @@ pub trait ArgonUtil {
 }
 
 pub struct ArgonSecurityUtil {
-    config: Arc<AppConfig>,
+    // config: Arc<AppConfig>,
 }
 
 impl ArgonSecurityUtil {
-    pub fn new(config: Arc<AppConfig>) -> Self {
-        Self { config }
+    pub fn new() -> Self {
+        Self {}
+    }
+}
+impl Default for ArgonSecurityUtil {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -53,7 +58,7 @@ impl ArgonUtil for ArgonSecurityUtil {
         stored_password: Option<String>,
         attempted_pasword: String,
     ) -> AppResult<bool> {
-        let binding = stored_password.clone().context("No password")?;
+        let binding = stored_password.context("No password")?;
         let stored_password = PasswordHash::new(binding.as_str())
             .context("Failed to parse hash in PHC string format.")?;
 

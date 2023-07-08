@@ -1,6 +1,6 @@
 use async_trait::async_trait;
 use sqlx::{
-    types::chrono::{NaiveDateTime, Utc},
+    types::chrono::{DateTime, Utc},
     FromRow,
 };
 use std::sync::Arc;
@@ -12,7 +12,7 @@ use crate::database::user::User;
 pub struct Session {
     pub id: Uuid,
     pub user_id: Uuid,
-    pub exp: NaiveDateTime,
+    pub exp: DateTime<Utc>,
     pub user_agent: String,
 }
 
@@ -21,7 +21,7 @@ impl Default for Session {
         Self {
             id: uuid!("8147a9f8-2845-4f92-9e1d-0c0c6c8db79b"),
             user_id: uuid!("f3f898aa-ffa3-4b58-91b0-612a1c801a5e"),
-            exp: Utc::now().naive_utc(),
+            exp: Utc::now(),
             user_agent: String::from("stub user agent"),
         }
     }
@@ -36,7 +36,7 @@ pub trait SessionsRepository {
         &self,
         user_id: Uuid,
         user_agent: &str,
-        exp: &NaiveDateTime,
+        exp: &DateTime<Utc>,
     ) -> anyhow::Result<Session>;
 
     async fn get_user_by_session_id(&self, id: Uuid) -> anyhow::Result<Option<User>>;

@@ -1,6 +1,10 @@
 use anyhow::Context;
 use async_trait::async_trait;
-use sqlx::{query_as, types::chrono::NaiveDateTime, PgPool};
+use sqlx::{
+    query_as,
+    types::chrono::{DateTime, Utc},
+    PgPool,
+};
 use uuid::Uuid;
 
 use crate::database::user::User;
@@ -13,7 +17,7 @@ impl SessionsRepository for PgPool {
         &self,
         user_id: Uuid,
         user_agent: &str,
-        exp: &NaiveDateTime,
+        exp: &DateTime<Utc>,
     ) -> anyhow::Result<Session> {
         query_as!(
             Session,
@@ -26,7 +30,7 @@ impl SessionsRepository for PgPool {
             user_agent,
             exp
         )
-        .fetch_one(&*self)
+        .fetch_one(self)
         .await
         .context("an unexpected error occured while creating a session")
         // todo!()
@@ -43,7 +47,7 @@ impl SessionsRepository for PgPool {
             "#,
             id,
         )
-        .fetch_optional(&*self)
+        .fetch_optional(self)
         .await
         .context("user was not found")
     }

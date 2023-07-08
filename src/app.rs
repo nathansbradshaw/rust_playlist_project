@@ -1,7 +1,6 @@
 use std::sync::Arc;
 
 use axum::{http::Request, Extension, Router};
-use axum_session::{Key, SecurityMode, SessionConfig, SessionPgPool, SessionStore};
 
 use crate::{
     config::AppConfig,
