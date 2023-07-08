@@ -1,14 +1,12 @@
 use anyhow::Context;
 use async_trait::async_trait;
 use secrecy::{ExposeSecret, Secret};
-use sqlx::query_as;
-
-use crate::database::Database;
+use sqlx::{query_as, PgPool};
 
 use super::{User, UsersRepository};
 
 #[async_trait]
-impl UsersRepository for Database {
+impl UsersRepository for PgPool {
     async fn create_user(
         &self,
         email: &str,
@@ -24,7 +22,7 @@ impl UsersRepository for Database {
             email,
             hash_password.expose_secret()
         )
-        .fetch_one(&self.pool)
+        .fetch_one(&*self)
         .await
         .context("an unexpected error occured while creating the user")
     }
@@ -39,7 +37,7 @@ impl UsersRepository for Database {
             "#,
             email,
         )
-        .fetch_optional(&self.pool)
+        .fetch_optional(&*self)
         .await
         .context("unexpected error while querying for user by email")
     }

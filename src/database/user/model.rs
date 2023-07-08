@@ -1,9 +1,9 @@
-use std::{sync::Arc, time::SystemTime};
+use std::sync::Arc;
 
 use async_trait::async_trait;
-use chrono::{NaiveDateTime, Utc};
 use secrecy::Secret;
-use sqlx::types::JsonValue;
+use sqlx::types::chrono::Utc;
+use sqlx::types::{chrono::NaiveDateTime, JsonValue};
 use sqlx::FromRow;
 use uuid::{uuid, Uuid};
 

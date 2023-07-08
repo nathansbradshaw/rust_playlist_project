@@ -1,9 +1,15 @@
+use std::sync::Arc;
+
 use axum::{http::Request, Extension, Router};
 use axum_session::{Key, SecurityMode, SessionConfig, SessionPgPool, SessionStore};
 
-use crate::server::{
-    health_check,
-    users::{login_controller, registration_controller},
+use crate::{
+    config::AppConfig,
+    server::{
+        api, health_check,
+        services::Services,
+        users::{login_controller, registration_controller},
+    },
 };
 use sqlx::PgPool;
 use tower::ServiceBuilder;
@@ -26,7 +32,7 @@ impl MakeRequestId for MakeRequestUuid {
     }
 }
 
-pub async fn app(pool: PgPool) -> Router {
+pub async fn app(pool: PgPool, config: Arc<AppConfig>) -> Router {
     // enable console logging
     // use std::sync::Once;
 
@@ -37,28 +43,10 @@ pub async fn app(pool: PgPool) -> Router {
     //     tracing_subscriber::fmt::init();
     // });
 
-    // TODO find a better place for this
-    let session_config = SessionConfig::default()
-        .with_table_name("sessions_table")
-        // 'Key::generate()' will generate a new key each restart of the server.
-        // If you want it to be more permanent then generate and set it to a config file.
-        // If with_key() is used it will set all cookies as private, which guarantees integrity, and authenticity.
-        .with_key(Key::generate())
-        // This is how we would Set a Database Key to encrypt as store our per session keys.
-        // This MUST be set in order to use SecurityMode::PerSession.
-        .with_database_key(Key::generate())
-        // This is How you will enable PerSession SessionID Private Cookie Encryption. When enabled it will
-        // Encrypt the SessionID and Storage with an Encryption key generated and stored per session.
-        // This allows for Key renewing without needing to force the entire Session from being destroyed.
-        // This Also helps prevent impersonation attempts.
-        .with_security_mode(SecurityMode::PerSession);
-
-    let session_store = SessionStore::<SessionPgPool>::new(None, session_config);
-    session_store.initiate().await.unwrap();
-
-    // end TODO find a better place for this
+    let services = Services::new(pool.clone(), config);
 
     Router::new()
+        .nest("/api/v1", api::app())
         .nest("/api", login_controller::routes())
         .nest("/api", registration_controller::routes())
         .nest("/api", health_check::routes())
@@ -78,4 +66,5 @@ pub async fn app(pool: PgPool) -> Router {
                 .propagate_x_request_id(),
         )
         .layer(Extension(pool))
+        .layer(ServiceBuilder::new().layer(Extension(services)))
 }

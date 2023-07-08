@@ -4,8 +4,11 @@ use tracing::{error, info};
 
 use crate::{
     database::user::DynUsersRepository,
-    error::{AppResult, Error},
-    server::dtos::user_dto::{ResponseUserDto, SignUpUserDto},
+    server::error::{AppResult, Error},
+    server::{
+        dtos::user_dto::{ResponseUserDto, SignUpUserDto},
+        utils::{argon_utils::DynArgonUtil, jwt_utils::DynJwtUtil},
+    },
 };
 use async_trait::async_trait;
 
@@ -21,11 +24,24 @@ pub trait UsersServiceTrait {
 #[derive(Clone)]
 pub struct UsersService {
     repository: DynUsersRepository,
+    argon_util: DynArgonUtil,
+    jwt_util: DynJwtUtil,
+    // session_service: DynSessionsService,
 }
 
 impl UsersService {
-    pub fn new(repository: DynUsersRepository) -> Self {
-        Self { repository }
+    pub fn new(
+        repository: DynUsersRepository,
+        argon_util: DynArgonUtil,
+        jwt_util: DynJwtUtil,
+        // session_service: DynSessionsService,
+    ) -> Self {
+        Self {
+            repository,
+            argon_util,
+            jwt_util,
+            // session_service,
+        }
     }
 }
 
@@ -52,6 +68,6 @@ impl UsersServiceTrait for UsersService {
             .create_user(&email, Secret::new(hashed_password))
             .await?;
 
-        Ok(created_user.into_dto())
+        Ok(created_user.into_dto(String::new()))
     }
 }
