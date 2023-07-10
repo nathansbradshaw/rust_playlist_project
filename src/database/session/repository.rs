@@ -7,9 +7,9 @@ use sqlx::{
 };
 use uuid::Uuid;
 
-use crate::database::user::User;
-
 use super::{Session, SessionsRepository};
+use crate::database::user::User;
+use crate::types::{HashedPassword, UserEmail};
 
 #[async_trait]
 impl SessionsRepository for PgPool {
@@ -22,9 +22,9 @@ impl SessionsRepository for PgPool {
         query_as!(
             Session,
             r#"
-        insert into sessions (user_id,user_agent,exp)
-        values ($1,$2,$3)
-        returning *
+                INSERT INTO sessions (user_id,user_agent,exp)
+                VALUES ($1,$2,$3)
+                RETURNING *
             "#,
             user_id,
             user_agent,
@@ -40,10 +40,23 @@ impl SessionsRepository for PgPool {
         query_as!(
             User,
             r#"
-        select users.* from users
-        inner join sessions
-        on users.id = sessions.user_id
-        where sessions.exp >= now() and sessions.id = $1
+                SELECT 
+                    users.id,
+                    users.date_created,
+                    users.last_updated,
+                    users.password_hash as "password_hash: HashedPassword",
+                    users.access_token,
+                    users.spotify_id,
+                    users.spotify_username,
+                    users.spotify_access_token,
+                    users.spotify_refresh_token,
+                    users.spotify_exp,
+                    users.meta,
+                    users.email AS "email: UserEmail"
+                FROM users
+                INNER JOIN sessions
+                ON users.id = sessions.user_id
+                WHERE sessions.exp >= now() AND sessions.id = $1
             "#,
             id,
         )

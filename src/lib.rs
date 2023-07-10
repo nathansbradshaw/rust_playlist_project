@@ -1,10 +1,8 @@
 pub mod app;
-// pub mod domain;
-pub mod server;
-// pub mod startup;
 pub mod authentication;
 pub mod config;
 pub mod database;
-pub mod domain;
+pub mod server;
 pub mod telemetry;
 pub mod tools;
+pub mod types;

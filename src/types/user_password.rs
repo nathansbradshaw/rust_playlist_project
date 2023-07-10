@@ -1,7 +1,9 @@
 use secrecy::{ExposeSecret, Secret};
+use serde::{Deserialize, Serialize};
 use validator::validate_length;
 
-#[derive(Debug)]
+#[derive(Debug, sqlx::Type, Deserialize)]
+#[sqlx(transparent)]
 pub struct UserPassword(Secret<String>);
 
 impl UserPassword {
@@ -11,6 +13,15 @@ impl UserPassword {
         } else {
             Err(format!("{} is not a valid user password.", s))
         }
+    }
+}
+
+impl Serialize for UserPassword {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.0.expose_secret())
     }
 }
 

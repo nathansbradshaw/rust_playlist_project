@@ -1,8 +1,9 @@
 use anyhow::Context;
 use async_trait::async_trait;
-use secrecy::{ExposeSecret, Secret};
 use sqlx::{query_as, PgPool};
 use uuid::Uuid;
+
+use crate::types::{HashedPassword, UserEmail};
 
 use super::{User, UsersRepository};
 
@@ -10,8 +11,8 @@ use super::{User, UsersRepository};
 impl UsersRepository for PgPool {
     async fn create_user(
         &self,
-        email: &str,
-        hash_password: Secret<String>,
+        email: &UserEmail,
+        hash_password: HashedPassword,
     ) -> anyhow::Result<User> {
         println!("Creating user");
         let user_id = Uuid::new_v4();
@@ -20,26 +21,50 @@ impl UsersRepository for PgPool {
             r#"
             INSERT INTO users (id, email, password_hash)
             VALUES ($1, $2, $3)
-        returning *
+            RETURNING 
+                id,
+                date_created,
+                last_updated,
+                password_hash as "password_hash: HashedPassword",
+                access_token,
+                spotify_id,
+                spotify_username,
+                spotify_access_token,
+                spotify_refresh_token,
+                spotify_exp,
+                meta,
+                email AS "email: UserEmail"
             "#,
             user_id,
-            email,
-            hash_password.expose_secret()
+            email.as_ref(),
+            String::from(hash_password),
         )
         .fetch_one(self)
         .await
         .context("an unexpected error occured while creating the user")
     }
 
-    async fn get_user_by_email(&self, email: &str) -> anyhow::Result<Option<User>> {
+    async fn get_user_by_email(&self, email: &UserEmail) -> anyhow::Result<Option<User>> {
         query_as!(
             User,
             r#"
-        select *
-        from users
-        where email = $1::varchar
+                SELECT 
+                    id,
+                    date_created,
+                    last_updated,
+                    password_hash as "password_hash: HashedPassword",
+                    access_token,
+                    spotify_id,
+                    spotify_username,
+                    spotify_access_token,
+                    spotify_refresh_token,
+                    spotify_exp,
+                    meta,
+                    email AS "email: UserEmail"
+                FROM users
+                WHERE email = $1::varchar
             "#,
-            email,
+            email.as_ref()
         )
         .fetch_optional(self)
         .await
@@ -50,9 +75,21 @@ impl UsersRepository for PgPool {
         query_as!(
             User,
             r#"
-        select *
-        from users
-        where id = $1
+                SELECT
+                    id,
+                    date_created,
+                    last_updated,
+                    password_hash as "password_hash: HashedPassword",
+                    access_token,
+                    spotify_id,
+                    spotify_username,
+                    spotify_access_token,
+                    spotify_refresh_token,
+                    spotify_exp,
+                    meta,
+                    email AS "email: UserEmail"
+                FROM users
+                WHERE id = $1
             "#,
             id,
         )
@@ -64,22 +101,37 @@ impl UsersRepository for PgPool {
     async fn update_user(
         &self,
         id: Uuid,
-        email: String,
-        password: Option<String>,
+        email: &UserEmail,
+        password: Option<HashedPassword>,
     ) -> anyhow::Result<User> {
         query_as!(
             User,
             r#"
-        update users
-        set
-            email = $1::varchar,
-            password_hash = $2::varchar,
-            last_updated = current_timestamp
-        where id = $3
-        returning *
+                UPDATE users
+                SET
+                    email = $1::varchar,
+                    password_hash = $2::varchar,
+                    last_updated = current_timestamp
+                WHERE id = $3
+                RETURNING 
+                    id,
+                    date_created,
+                    last_updated,
+                    password_hash as "password_hash: HashedPassword",
+                    access_token,
+                    spotify_id,
+                    spotify_username,
+                    spotify_access_token,
+                    spotify_refresh_token,
+                    spotify_exp,
+                    meta,
+                    email AS "email: UserEmail"
             "#,
-            email,
-            password,
+            email.as_ref(),
+            match password {
+                Some(p) => Some(String::from(p)),
+                None => None,
+            },
             id
         )
         .fetch_one(self)

@@ -4,7 +4,6 @@ use crate::server::{
     extractors::{
         required_authentication_extractor::RequiredAuthentication,
         session_extractor::SessionExtractor, user_agent_extractor::UserAgentExtractor,
-        validation_extractor::ValidationExtractor,
     },
     services::Services,
 };
@@ -27,7 +26,8 @@ impl UserController {
 
     pub async fn signup_user_endpoint(
         Extension(services): Extension<Services>,
-        ValidationExtractor(request): ValidationExtractor<SignUpUserDto>,
+        // ValidationExtractor(request): ValidationExtractor<SignUpUserDto>,
+        axum::extract::Json(request): axum::extract::Json<SignUpUserDto>,
     ) -> AppResult<Json<UserAuthenicationResponse>> {
         info!(
             "recieved request to create user {:?}",
@@ -43,7 +43,8 @@ impl UserController {
         jar: CookieJar,
         Extension(services): Extension<Services>,
         UserAgentExtractor(user_agent): UserAgentExtractor,
-        ValidationExtractor(request): ValidationExtractor<SignInUserDto>,
+        // ValidationExtractor(request): ValidationExtractor<SignInUserDto>,
+        axum::extract::Json(request): axum::extract::Json<SignInUserDto>,
     ) -> AppResult<(CookieJar, Json<UserAuthenicationResponse>)> {
         info!(
             "recieved request to login user {:?}",

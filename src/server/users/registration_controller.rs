@@ -1,8 +1,8 @@
 use crate::{
     authentication::compute_password_hash,
-    domain::{NewRegistration, UserEmail, UserPassword},
     telemetry::spawn_blocking_with_tracing,
     tools::error_chain_fmt,
+    types::{NewRegistration, UserEmail, UserPassword},
 };
 use anyhow::{Context, Result};
 use axum::{response::IntoResponse, routing::post, Extension, Form, Router};

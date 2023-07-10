@@ -1,6 +1,8 @@
+use serde::{Deserialize, Serialize};
 use validator::validate_email;
-
-#[derive(Debug)]
+#[derive(Debug, Default, Clone, sqlx::Type, Serialize, Deserialize)]
+#[sqlx(transparent)]
+#[sqlx(type_name = "UserEmail")]
 pub struct UserEmail(String);
 
 impl UserEmail {
@@ -16,6 +18,12 @@ impl UserEmail {
 impl AsRef<str> for UserEmail {
     fn as_ref(&self) -> &str {
         &self.0
+    }
+}
+
+impl From<UserEmail> for String {
+    fn from(value: UserEmail) -> Self {
+        value.0
     }
 }
 

@@ -2,6 +2,7 @@
 pub enum CargoEnv {
     Development,
     Production,
+    Test,
 }
 
 #[derive(clap::Parser)]

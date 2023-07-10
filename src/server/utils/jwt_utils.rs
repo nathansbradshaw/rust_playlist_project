@@ -9,12 +9,13 @@ use uuid::Uuid;
 
 use crate::config::AppConfig;
 use crate::server::error::{AppResult, Error};
+use crate::types::UserEmail;
 
 /// A security service for handling JWT authentication.
 pub type DynJwtUtil = Arc<dyn JwtUtil + Send + Sync>;
 
 pub trait JwtUtil {
-    fn new_access_token(&self, user_id: Uuid, email: &str) -> AppResult<String>;
+    fn new_access_token(&self, user_id: Uuid, email: &UserEmail) -> AppResult<String>;
     fn new_refresh_token(&self, sub: Uuid) -> AppResult<String>;
     fn get_user_id_from_token(&self, token: String) -> AppResult<Uuid>;
     fn get_session_id_from_token(&self, token: String) -> AppResult<Uuid>;
@@ -48,14 +49,14 @@ impl JwtTokenUtil {
 }
 
 impl JwtUtil for JwtTokenUtil {
-    fn new_access_token(&self, user_id: Uuid, email: &str) -> AppResult<String> {
+    fn new_access_token(&self, user_id: Uuid, email: &UserEmail) -> AppResult<String> {
         let from_now = Duration::from_secs(3600); //? expires every 15 min
         let expired_future_time = SystemTime::now().add(from_now);
         let exp = OffsetDateTime::from(expired_future_time);
         let now = OffsetDateTime::now_utc();
 
         let claims = AccessTokenClaims {
-            sub: String::from(email),
+            sub: String::from(email.as_ref()),
             exp: exp.unix_timestamp() as usize,
             iat: now.unix_timestamp() as usize,
             user_id,

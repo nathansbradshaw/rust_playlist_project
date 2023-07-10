@@ -1,4 +1,3 @@
-use secrecy::Secret;
 use std::sync::Arc;
 use tracing::{error, info};
 use uuid::Uuid;
@@ -13,6 +12,7 @@ use crate::{
         dtos::{session_dto::NewSessionDto, user_dto::SignInUserDto},
         error::{AppResult, Error},
     },
+    types::HashedPassword,
 };
 use async_trait::async_trait;
 
@@ -84,10 +84,7 @@ impl UsersServiceTrait for UsersService {
         println!("hashed password");
 
         info!("password hashed successfully, creating user {:?}", email);
-        let created_user = self
-            .repository
-            .create_user(&email, Secret::new(hashed_password))
-            .await?;
+        let created_user = self.repository.create_user(&email, hashed_password).await?;
 
         Ok(created_user.into_dto(String::new()))
     }
@@ -141,9 +138,7 @@ impl UsersServiceTrait for UsersService {
             "user found with email {:?}, generating new token",
             user.email
         );
-        let token = self
-            .jwt_util
-            .new_access_token(user.id, user.email.as_str())?;
+        let token = self.jwt_util.new_access_token(user.id, &user.email)?;
 
         Ok(user.into_dto(token))
     }
@@ -155,32 +150,30 @@ impl UsersServiceTrait for UsersService {
     ) -> AppResult<ResponseUserDto> {
         info!("retrieving user {:?}", user_id);
         let user = self.repository.get_user_by_id(user_id).await?;
-
+        // TODO fix these unwraps
         let updated_email = request.email.unwrap_or(user.email);
-        let mut updated_hashed_password: Option<String> = user.password_hash;
+        let mut updated_hashed_password: Option<HashedPassword> = user.password_hash;
 
         // if the password is included on the request, hash it and update the stored password
-        if request.password.is_some() && !request.password.as_ref().unwrap().is_empty() {
+        if request.password.is_some() && !request.password.as_ref().unwrap().as_ref().is_empty() {
             info!(
                 "new password found for user {:?}, hashing password",
                 user_id
             );
             updated_hashed_password = self
                 .argon_util
-                .hash_password(request.password.unwrap().as_str())
+                .hash_password(&request.password.unwrap())
                 .ok()
         }
 
         info!("updating user {:?}", user_id);
         let updated_user = self
             .repository
-            .update_user(user_id, updated_email.clone(), updated_hashed_password)
+            .update_user(user_id, &updated_email, updated_hashed_password)
             .await?;
 
         info!("user {:?} updated, generating a new token", user_id);
-        let token = self
-            .jwt_util
-            .new_access_token(user_id, updated_email.as_str())?;
+        let token = self.jwt_util.new_access_token(user_id, &updated_email)?;
 
         Ok(updated_user.into_dto(token))
     }

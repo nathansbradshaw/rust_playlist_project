@@ -1,8 +1,10 @@
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
-use validator::Validate;
 
-use crate::database::user::User;
+use crate::{
+    database::user::User,
+    types::{UserEmail, UserPassword},
+};
 
 impl User {
     pub fn into_dto(self, token: String) -> ResponseUserDto {
@@ -18,7 +20,7 @@ impl User {
 pub struct ResponseUserDto {
     #[serde(skip_serializing, skip_deserializing)]
     pub id: Uuid,
-    pub email: String,
+    pub email: UserEmail,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub access_token: Option<String>,
 }
@@ -47,30 +49,23 @@ pub struct UserAuthenicationResponse {
 //         }
 //     }
 // }
+#[derive(Serialize, Deserialize, Default, Debug)]
 
-#[derive(Clone, Serialize, Deserialize, Debug, Validate, Default)]
 pub struct SignUpUserDto {
-    #[validate(required, length(min = 1), email(message = "email is invalid"))]
-    pub email: Option<String>,
-    #[validate(required, length(min = 6))]
-    pub password: Option<String>,
+    pub email: Option<UserEmail>,
+    pub password: Option<UserPassword>,
 }
+#[derive(Serialize, Deserialize, Default, Debug)]
 
-#[derive(Clone, Serialize, Deserialize, Debug, Validate, Default)]
 pub struct SignInUserDto {
-    #[validate(required, length(min = 1), email(message = "email is invalid"))]
-    pub email: Option<String>,
-    #[validate(required, length(min = 6))]
-    pub password: Option<String>,
+    pub email: Option<UserEmail>,
+    pub password: Option<UserPassword>,
 }
+#[derive(Serialize, Deserialize, Default, Debug)]
 
-#[derive(Deserialize, Serialize, Debug, Default)]
 pub struct UpdateUserDto {
-    pub email: Option<String>,
-    pub name: Option<String>,
-    pub password: Option<String>,
-    pub bio: Option<String>,
-    pub image: Option<String>,
+    pub email: Option<UserEmail>,
+    pub password: Option<UserPassword>,
 }
 
 // impl SignUpUserDto {

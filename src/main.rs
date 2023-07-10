@@ -13,10 +13,10 @@ mod app;
 mod authentication;
 mod config;
 mod database;
-mod domain;
 mod server;
 mod telemetry;
 mod tools;
+mod types;
 
 #[tokio::main]
 pub async fn main() -> Result<(), anyhow::Error> {
