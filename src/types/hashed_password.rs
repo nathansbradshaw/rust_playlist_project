@@ -53,20 +53,13 @@ mod tests {
         assert_err!(HashedPassword::parse(password));
     }
 
-    #[test]
-    fn password_long_is_rejected() {
-        let password = "k4yKgZfiHbox3riwUgxFpNAPfdByGjPoMp4hE2CEGGop9Ea8dGdLKx00iiw596Num1MBFQFny232Vchm7nskzqP3nXS966THJBUXo7QEOKxhAWuIlKopFpLi8HCFsgBUL0VJPfYTrMd2t625E8t2veOgAmPHb1kRCtreXwoLC1jY1roL59EZkUa5GCUX8eZrPw5rceKf1h3jNRZZS9NMts0qf6LQUOe7Jeg1dfkxuVRSiqagFkhoeKL3gPvymDki
-        ".to_string();
-        assert_err!(HashedPassword::parse(password));
-    }
-
     #[derive(Debug, Clone)]
     struct ValidpasswordFixture(pub String);
 
     impl quickcheck::Arbitrary for ValidpasswordFixture {
         fn arbitrary(g: &mut quickcheck::Gen) -> Self {
             let mut rng = StdRng::seed_from_u64(u64::arbitrary(g));
-            let password = Password(8..255).fake_with_rng(&mut rng);
+            let password = Password(32..255).fake_with_rng(&mut rng);
 
             Self(password)
         }

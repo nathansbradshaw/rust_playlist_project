@@ -1,0 +1,530 @@
+{
+  "db": "PostgreSQL",
+  "3be70af9fa25d818f6ff86412c8014f5e3fc2d1bb81bae8c8c7210fffc1058f3": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "date_created",
+          "ordinal": 1,
+          "type_info": "Timestamp"
+        },
+        {
+          "name": "last_updated",
+          "ordinal": 2,
+          "type_info": "Timestamp"
+        },
+        {
+          "name": "password_hash: HashedPassword",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "access_token",
+          "ordinal": 4,
+          "type_info": "Text"
+        },
+        {
+          "name": "spotify_id",
+          "ordinal": 5,
+          "type_info": "Text"
+        },
+        {
+          "name": "spotify_username",
+          "ordinal": 6,
+          "type_info": "Text"
+        },
+        {
+          "name": "spotify_access_token",
+          "ordinal": 7,
+          "type_info": "Text"
+        },
+        {
+          "name": "spotify_refresh_token",
+          "ordinal": 8,
+          "type_info": "Text"
+        },
+        {
+          "name": "spotify_exp",
+          "ordinal": 9,
+          "type_info": "Text"
+        },
+        {
+          "name": "meta",
+          "ordinal": 10,
+          "type_info": "Jsonb"
+        },
+        {
+          "name": "email: UserEmail",
+          "ordinal": 11,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n                SELECT\n                    id,\n                    date_created,\n                    last_updated,\n                    password_hash as \"password_hash: HashedPassword\",\n                    access_token,\n                    spotify_id,\n                    spotify_username,\n                    spotify_access_token,\n                    spotify_refresh_token,\n                    spotify_exp,\n                    meta,\n                    email AS \"email: UserEmail\"\n                FROM users\n                WHERE id = $1\n            "
+  },
+  "3e6184e77128b81e6cf58b8d611d2e00a290daa4159de5890548baa49b325c40": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "exp",
+          "ordinal": 1,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "user_id",
+          "ordinal": 2,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "user_agent",
+          "ordinal": 3,
+          "type_info": "Varchar"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Varchar",
+          "Timestamptz"
+        ]
+      }
+    },
+    "query": "\n                INSERT INTO sessions (user_id,user_agent,exp)\n                VALUES ($1,$2,$3)\n                RETURNING *\n            "
+  },
+  "5903e443edec2a9a4974833ff3f3172113e0808ad3e47d8a944ea754ee8c4650": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "date_created",
+          "ordinal": 1,
+          "type_info": "Timestamp"
+        },
+        {
+          "name": "last_updated",
+          "ordinal": 2,
+          "type_info": "Timestamp"
+        },
+        {
+          "name": "password_hash: HashedPassword",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "access_token",
+          "ordinal": 4,
+          "type_info": "Text"
+        },
+        {
+          "name": "spotify_id",
+          "ordinal": 5,
+          "type_info": "Text"
+        },
+        {
+          "name": "spotify_username",
+          "ordinal": 6,
+          "type_info": "Text"
+        },
+        {
+          "name": "spotify_access_token",
+          "ordinal": 7,
+          "type_info": "Text"
+        },
+        {
+          "name": "spotify_refresh_token",
+          "ordinal": 8,
+          "type_info": "Text"
+        },
+        {
+          "name": "spotify_exp",
+          "ordinal": 9,
+          "type_info": "Text"
+        },
+        {
+          "name": "meta",
+          "ordinal": 10,
+          "type_info": "Jsonb"
+        },
+        {
+          "name": "email: UserEmail",
+          "ordinal": 11,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Text",
+          "Text"
+        ]
+      }
+    },
+    "query": "\n            INSERT INTO users (id, email, password_hash)\n            VALUES ($1, $2, $3)\n            RETURNING \n                id,\n                date_created,\n                last_updated,\n                password_hash as \"password_hash: HashedPassword\",\n                access_token,\n                spotify_id,\n                spotify_username,\n                spotify_access_token,\n                spotify_refresh_token,\n                spotify_exp,\n                meta,\n                email AS \"email: UserEmail\"\n            "
+  },
+  "5ab7b62e51a5c24891573fdd020c857247cff1c8a30de18dee555fee2b4b7be4": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "date_created",
+          "ordinal": 1,
+          "type_info": "Timestamp"
+        },
+        {
+          "name": "last_updated",
+          "ordinal": 2,
+          "type_info": "Timestamp"
+        },
+        {
+          "name": "password_hash: HashedPassword",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "access_token",
+          "ordinal": 4,
+          "type_info": "Text"
+        },
+        {
+          "name": "spotify_id",
+          "ordinal": 5,
+          "type_info": "Text"
+        },
+        {
+          "name": "spotify_username",
+          "ordinal": 6,
+          "type_info": "Text"
+        },
+        {
+          "name": "spotify_access_token",
+          "ordinal": 7,
+          "type_info": "Text"
+        },
+        {
+          "name": "spotify_refresh_token",
+          "ordinal": 8,
+          "type_info": "Text"
+        },
+        {
+          "name": "spotify_exp",
+          "ordinal": 9,
+          "type_info": "Text"
+        },
+        {
+          "name": "meta",
+          "ordinal": 10,
+          "type_info": "Jsonb"
+        },
+        {
+          "name": "email: UserEmail",
+          "ordinal": 11,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Varchar",
+          "Varchar",
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n                UPDATE users\n                SET\n                    email = $1::varchar,\n                    password_hash = $2::varchar,\n                    last_updated = current_timestamp\n                WHERE id = $3\n                RETURNING \n                    id,\n                    date_created,\n                    last_updated,\n                    password_hash as \"password_hash: HashedPassword\",\n                    access_token,\n                    spotify_id,\n                    spotify_username,\n                    spotify_access_token,\n                    spotify_refresh_token,\n                    spotify_exp,\n                    meta,\n                    email AS \"email: UserEmail\"\n            "
+  },
+  "60b525c178f2cad080563ea589e2c3ebf5f59be1ca8cafbc4dad7346124c92a4": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        UPDATE users\n        SET password_hash = $1\n        WHERE id = $2\n        "
+  },
+  "653c825c81c3e1be43ca09bf9844cba3ea9affcee3287d4a325f9f94c435708e": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "date_created",
+          "ordinal": 1,
+          "type_info": "Timestamp"
+        },
+        {
+          "name": "last_updated",
+          "ordinal": 2,
+          "type_info": "Timestamp"
+        },
+        {
+          "name": "password_hash: HashedPassword",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "access_token",
+          "ordinal": 4,
+          "type_info": "Text"
+        },
+        {
+          "name": "spotify_id",
+          "ordinal": 5,
+          "type_info": "Text"
+        },
+        {
+          "name": "spotify_username",
+          "ordinal": 6,
+          "type_info": "Text"
+        },
+        {
+          "name": "spotify_access_token",
+          "ordinal": 7,
+          "type_info": "Text"
+        },
+        {
+          "name": "spotify_refresh_token",
+          "ordinal": 8,
+          "type_info": "Text"
+        },
+        {
+          "name": "spotify_exp",
+          "ordinal": 9,
+          "type_info": "Text"
+        },
+        {
+          "name": "meta",
+          "ordinal": 10,
+          "type_info": "Jsonb"
+        },
+        {
+          "name": "email: UserEmail",
+          "ordinal": 11,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Varchar"
+        ]
+      }
+    },
+    "query": "\n                SELECT \n                    id,\n                    date_created,\n                    last_updated,\n                    password_hash as \"password_hash: HashedPassword\",\n                    access_token,\n                    spotify_id,\n                    spotify_username,\n                    spotify_access_token,\n                    spotify_refresh_token,\n                    spotify_exp,\n                    meta,\n                    email AS \"email: UserEmail\"\n                FROM users\n                WHERE email = $1::varchar\n            "
+  },
+  "da8c6cc9ee03450afb507a7c6d19f80298bee8169f85cd00500a9ac022344f2a": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Text",
+          "Text"
+        ]
+      }
+    },
+    "query": "\n    INSERT INTO users (id, email, password_hash)\n    VALUES ($1, $2, $3)\n    "
+  },
+  "dd9557809f59c4a4e31d2ba38e835f55e67e0ebc6486fe96a1c82312626856d5": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "password_hash",
+          "ordinal": 1,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        true
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "\n        SELECT id, password_hash\n        FROM users\n        WHERE email = $1\n        "
+  },
+  "e47d21b4aaea207daaf44218c807a54d3a5286642e97060d95b75e05948cfd8d": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "date_created",
+          "ordinal": 1,
+          "type_info": "Timestamp"
+        },
+        {
+          "name": "last_updated",
+          "ordinal": 2,
+          "type_info": "Timestamp"
+        },
+        {
+          "name": "password_hash: HashedPassword",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "access_token",
+          "ordinal": 4,
+          "type_info": "Text"
+        },
+        {
+          "name": "spotify_id",
+          "ordinal": 5,
+          "type_info": "Text"
+        },
+        {
+          "name": "spotify_username",
+          "ordinal": 6,
+          "type_info": "Text"
+        },
+        {
+          "name": "spotify_access_token",
+          "ordinal": 7,
+          "type_info": "Text"
+        },
+        {
+          "name": "spotify_refresh_token",
+          "ordinal": 8,
+          "type_info": "Text"
+        },
+        {
+          "name": "spotify_exp",
+          "ordinal": 9,
+          "type_info": "Text"
+        },
+        {
+          "name": "meta",
+          "ordinal": 10,
+          "type_info": "Jsonb"
+        },
+        {
+          "name": "email: UserEmail",
+          "ordinal": 11,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n                SELECT \n                    users.id,\n                    users.date_created,\n                    users.last_updated,\n                    users.password_hash as \"password_hash: HashedPassword\",\n                    users.access_token,\n                    users.spotify_id,\n                    users.spotify_username,\n                    users.spotify_access_token,\n                    users.spotify_refresh_token,\n                    users.spotify_exp,\n                    users.meta,\n                    users.email AS \"email: UserEmail\"\n                FROM users\n                INNER JOIN sessions\n                ON users.id = sessions.user_id\n                WHERE sessions.exp >= now() AND sessions.id = $1\n            "
+  }
+}
