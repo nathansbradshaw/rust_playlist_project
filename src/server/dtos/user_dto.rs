@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
+use validator::Validate;
 
 use crate::{
     database::user::User,
@@ -30,38 +31,38 @@ pub struct UserAuthenicationResponse {
     pub user: ResponseUserDto,
 }
 
-// impl UserAuthenicationResponse {
-//     pub fn new(
-//         id: Uuid,
-//         name: String,
-//         email: String,
-//         // unfortunately, while our implementation returns thes optional fields as empty strings,
-//         // the realworld demo API enables nullable serializing by default, so we have to wrap these
-//         // strings as `Option` option values for now
-//         access_token: Option<String>,
-//     ) -> Self {
-//         UserAuthenicationResponse {
-//             user: ResponseUserDto {
-//                 id,
-//                 email,
-//                 access_token,
-//             },
-//         }
-//     }
-// }
-#[derive(Serialize, Deserialize, Default, Debug)]
+impl UserAuthenicationResponse {
+    pub fn new(
+        id: Uuid,
+        email: UserEmail,
+        // unfortunately, while our implementation returns thes optional fields as empty strings,
+        // the realworld demo API enables nullable serializing by default, so we have to wrap these
+        // strings as `Option` option values for now
+        access_token: Option<String>,
+    ) -> Self {
+        UserAuthenicationResponse {
+            user: ResponseUserDto {
+                id,
+                email,
+                access_token,
+            },
+        }
+    }
+}
+#[derive(Serialize, Deserialize, Default, Debug, Validate)]
 
 pub struct SignUpUserDto {
     pub email: Option<UserEmail>,
     pub password: Option<UserPassword>,
 }
-#[derive(Serialize, Deserialize, Default, Debug)]
+
+#[derive(Serialize, Deserialize, Default, Debug, Validate)]
 
 pub struct SignInUserDto {
     pub email: Option<UserEmail>,
     pub password: Option<UserPassword>,
 }
-#[derive(Serialize, Deserialize, Default, Debug)]
+#[derive(Serialize, Deserialize, Default, Debug, Validate)]
 
 pub struct UpdateUserDto {
     pub email: Option<UserEmail>,

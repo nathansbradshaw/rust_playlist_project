@@ -1,8 +1,9 @@
 use serde::{Deserialize, Serialize};
 use validator::validate_email;
-#[derive(Debug, Default, Clone, sqlx::Type, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, sqlx::Type, Deserialize, Serialize)]
 #[sqlx(transparent)]
 #[sqlx(type_name = "UserEmail")]
+#[serde(try_from = "String")]
 pub struct UserEmail(String);
 
 impl UserEmail {
@@ -12,6 +13,14 @@ impl UserEmail {
         } else {
             Err(format!("{} is not a valid user email.", s))
         }
+    }
+}
+
+impl TryFrom<String> for UserEmail {
+    type Error = String;
+
+    fn try_from(value: String) -> Result<Self, Self::Error> {
+        UserEmail::parse(value)
     }
 }
 

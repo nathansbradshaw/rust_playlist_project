@@ -1,3 +1,4 @@
+pub mod types;
 use playlist_project::app::app;
 use reqwest::Client;
 
