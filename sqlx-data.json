@@ -302,19 +302,6 @@
     },
     "query": "\n                UPDATE users\n                SET\n                    email = $1::varchar,\n                    password_hash = $2::varchar,\n                    last_updated = current_timestamp\n                WHERE id = $3\n                RETURNING \n                    id,\n                    date_created,\n                    last_updated,\n                    password_hash as \"password_hash: HashedPassword\",\n                    access_token,\n                    spotify_id,\n                    spotify_username,\n                    spotify_access_token,\n                    spotify_refresh_token,\n                    spotify_exp,\n                    meta,\n                    email AS \"email: UserEmail\"\n            "
   },
-  "60b525c178f2cad080563ea589e2c3ebf5f59be1ca8cafbc4dad7346124c92a4": {
-    "describe": {
-      "columns": [],
-      "nullable": [],
-      "parameters": {
-        "Left": [
-          "Text",
-          "Uuid"
-        ]
-      }
-    },
-    "query": "\n        UPDATE users\n        SET password_hash = $1\n        WHERE id = $2\n        "
-  },
   "653c825c81c3e1be43ca09bf9844cba3ea9affcee3287d4a325f9f94c435708e": {
     "describe": {
       "columns": [
@@ -400,46 +387,6 @@
       }
     },
     "query": "\n                SELECT \n                    id,\n                    date_created,\n                    last_updated,\n                    password_hash as \"password_hash: HashedPassword\",\n                    access_token,\n                    spotify_id,\n                    spotify_username,\n                    spotify_access_token,\n                    spotify_refresh_token,\n                    spotify_exp,\n                    meta,\n                    email AS \"email: UserEmail\"\n                FROM users\n                WHERE email = $1::varchar\n            "
-  },
-  "da8c6cc9ee03450afb507a7c6d19f80298bee8169f85cd00500a9ac022344f2a": {
-    "describe": {
-      "columns": [],
-      "nullable": [],
-      "parameters": {
-        "Left": [
-          "Uuid",
-          "Text",
-          "Text"
-        ]
-      }
-    },
-    "query": "\n    INSERT INTO users (id, email, password_hash)\n    VALUES ($1, $2, $3)\n    "
-  },
-  "dd9557809f59c4a4e31d2ba38e835f55e67e0ebc6486fe96a1c82312626856d5": {
-    "describe": {
-      "columns": [
-        {
-          "name": "id",
-          "ordinal": 0,
-          "type_info": "Uuid"
-        },
-        {
-          "name": "password_hash",
-          "ordinal": 1,
-          "type_info": "Text"
-        }
-      ],
-      "nullable": [
-        false,
-        true
-      ],
-      "parameters": {
-        "Left": [
-          "Text"
-        ]
-      }
-    },
-    "query": "\n        SELECT id, password_hash\n        FROM users\n        WHERE email = $1\n        "
   },
   "e47d21b4aaea207daaf44218c807a54d3a5286642e97060d95b75e05948cfd8d": {
     "describe": {
