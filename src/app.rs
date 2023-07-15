@@ -4,11 +4,7 @@ use axum::{http::Request, Extension, Router};
 
 use crate::{
     config::AppConfig,
-    server::{
-        api, health_check,
-        services::Services,
-        users::{login_controller, registration_controller},
-    },
+    server::{api, health_check, services::Services},
 };
 use sqlx::PgPool;
 use tower::ServiceBuilder;
@@ -46,9 +42,7 @@ pub async fn app(pool: PgPool, config: Arc<AppConfig>) -> Router {
 
     Router::new()
         .nest("/api/v1", api::app())
-        .nest("/api", login_controller::routes())
-        .nest("/api", registration_controller::routes())
-        .nest("/api", health_check::routes())
+        .nest("/api/v1", health_check::routes())
         .layer(
             // from https://docs.rs/tower-http/0.2.5/tower_http/request_id/index.html#using-trace
             ServiceBuilder::new()

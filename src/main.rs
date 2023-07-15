@@ -10,12 +10,12 @@ use dotenvy::dotenv;
 
 use sqlx::postgres::{PgConnectOptions, PgPoolOptions, PgSslMode};
 mod app;
-mod authentication;
+// mod authentication;
 mod config;
 mod database;
 mod server;
-mod telemetry;
-mod tools;
+// mod telemetry;
+// mod tools;
 mod types;
 
 #[tokio::main]

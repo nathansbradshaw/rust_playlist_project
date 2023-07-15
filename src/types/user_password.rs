@@ -4,6 +4,7 @@ use validator::validate_length;
 
 #[derive(Debug, sqlx::Type, Deserialize)]
 #[sqlx(transparent)]
+#[serde(try_from = "String")]
 pub struct UserPassword(Secret<String>);
 
 impl UserPassword {
@@ -11,7 +12,7 @@ impl UserPassword {
         if validate_length(&s, Some(8), Some(255), None) {
             Ok(Self(Secret::new(s)))
         } else {
-            Err(format!("{} is not a valid user password.", s))
+            Err("The provided password is invalid".to_string())
         }
     }
 }
@@ -22,6 +23,14 @@ impl Serialize for UserPassword {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.0.expose_secret())
+    }
+}
+
+impl TryFrom<String> for UserPassword {
+    type Error = String;
+
+    fn try_from(value: String) -> Result<Self, Self::Error> {
+        UserPassword::parse(value)
     }
 }
 

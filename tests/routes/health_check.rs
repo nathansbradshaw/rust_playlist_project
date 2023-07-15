@@ -6,7 +6,7 @@ async fn health_check_works(pool: sqlx::Pool<sqlx::Postgres>) {
     let (client, address, _) = common::test_util::setup(pool).await;
 
     let response = client
-        .get(&format!("{}/api/health", &address))
+        .get(&format!("{}/api/v1/health", &address))
         .send()
         .await
         .expect("Failed to execute request");

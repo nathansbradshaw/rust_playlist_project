@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 use validator::validate_email;
-#[derive(Debug, Default, Clone, sqlx::Type, Deserialize, Serialize)]
+#[derive(Debug, Default, Clone, sqlx::Type, Serialize, Deserialize)]
 #[sqlx(transparent)]
 #[sqlx(type_name = "UserEmail")]
 #[serde(try_from = "String")]
@@ -16,6 +16,7 @@ impl UserEmail {
     }
 }
 
+// This ensures that serde runs the validation
 impl TryFrom<String> for UserEmail {
     type Error = String;
 

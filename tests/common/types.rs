@@ -4,3 +4,9 @@ pub struct SignUpUserDto {
     pub email: String,
     pub password: String,
 }
+
+#[derive(serde::Serialize, serde::Deserialize)]
+pub struct ResponseUserDto {
+    pub email: Option<String>,
+    pub access_token: Option<String>,
+}

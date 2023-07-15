@@ -34,7 +34,11 @@ impl UserController {
             request.email.as_ref().unwrap(),
         );
 
-        let created_user = services.users.signup_user(request).await?;
+        let req = services.users.signup_user(request).await;
+
+        println!("Request: {:?}", req);
+
+        let created_user = req?;
 
         Ok(Json(UserAuthenicationResponse { user: created_user }))
     }
@@ -49,6 +53,8 @@ impl UserController {
             "recieved request to login user {:?}",
             request.email.as_ref().unwrap()
         );
+
+        println!("Signin user");
 
         let (user, refresh_token) = services.users.signin_user(request, user_agent).await?;
 

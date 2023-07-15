@@ -18,6 +18,8 @@ pub struct ApiError {
 
 impl ApiError {
     pub fn new(error: String) -> Self {
+        println!("App error");
+
         let mut error_map: HashMap<String, Vec<String>> = HashMap::new();
         error_map.insert("message".to_owned(), vec![error]);
         Self { errors: error_map }
@@ -40,8 +42,8 @@ pub enum Error {
     NotFound(String),
     // #[error("{0}")]
     // ApplicationStartup(String),
-    // #[error("{0}")]
-    // BadRequest(String),
+    #[error("{0}")]
+    BadRequest(String),
     // #[error("unexpected error has occurred")]
     // InternalServerError,
     #[error("{0}")]
@@ -71,7 +73,8 @@ impl Error {
                         .entry(Cow::from(field_property))
                         .or_insert_with(Vec::new)
                         .push(error.message.unwrap_or_else(|| {
-                            // required validators contain None for their message, assume a default response
+                            //
+
                             let params: Vec<Cow<'static, str>> = error
                                 .params
                                 .iter()
@@ -134,6 +137,8 @@ impl IntoResponse for Error {
             Self::Unauthorized => (StatusCode::UNAUTHORIZED, Self::Unauthorized.to_string()),
             Self::Forbidden => (StatusCode::FORBIDDEN, Self::Forbidden.to_string()),
             Self::AxumJsonRejection(err) => (StatusCode::BAD_REQUEST, err.body_text()),
+            Self::BadRequest(err) => (StatusCode::BAD_REQUEST, err),
+            // Self::ApplicationStartup(err) => (StatusCode::INTERNAL_SERVER_ERROR, err),
             _ => (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 String::from("unexpected error occurred"),

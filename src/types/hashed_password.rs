@@ -14,6 +14,13 @@ impl HashedPassword {
     }
 }
 
+impl TryFrom<String> for HashedPassword {
+    type Error = String;
+    fn try_from(value: String) -> Result<Self, Self::Error> {
+        HashedPassword::parse(value)
+    }
+}
+
 impl AsRef<str> for HashedPassword {
     fn as_ref(&self) -> &str {
         &self.0

@@ -12,7 +12,15 @@ pub mod test_util {
     pub async fn setup(pool: sqlx::Pool<sqlx::Postgres>) -> (Client, String, Pool<sqlx::Postgres>) {
         let (app, address, listener, pool) = app_setup(pool).await;
         start_test_server(listener, app).await;
-        (reqwest::Client::new(), address, pool)
+        (
+            reqwest::Client::builder()
+                .cookie_store(true)
+                .user_agent("Value")
+                .build()
+                .expect("Failed building client"),
+            address,
+            pool,
+        )
     }
 
     pub async fn app_setup(

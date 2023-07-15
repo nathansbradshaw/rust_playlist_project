@@ -31,24 +31,24 @@ pub struct UserAuthenicationResponse {
     pub user: ResponseUserDto,
 }
 
-impl UserAuthenicationResponse {
-    pub fn new(
-        id: Uuid,
-        email: UserEmail,
-        // unfortunately, while our implementation returns thes optional fields as empty strings,
-        // the realworld demo API enables nullable serializing by default, so we have to wrap these
-        // strings as `Option` option values for now
-        access_token: Option<String>,
-    ) -> Self {
-        UserAuthenicationResponse {
-            user: ResponseUserDto {
-                id,
-                email,
-                access_token,
-            },
-        }
-    }
-}
+// impl UserAuthenicationResponse {
+//     pub fn new(
+//         id: Uuid,
+//         email: UserEmail,
+//         // unfortunately, while our implementation returns thes optional fields as empty strings,
+//         // the realworld demo API enables nullable serializing by default, so we have to wrap these
+//         // strings as `Option` option values for now
+//         access_token: Option<String>,
+//     ) -> Self {
+//         UserAuthenicationResponse {
+//             user: ResponseUserDto {
+//                 id,
+//                 email,
+//                 access_token,
+//             },
+//         }
+//     }
+// }
 #[derive(Serialize, Deserialize, Default, Debug, Validate)]
 
 pub struct SignUpUserDto {

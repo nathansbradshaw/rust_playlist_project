@@ -15,6 +15,7 @@ where
 {
     type Rejection = Error;
     async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {
+        println!("checking user agent");
         if let Some(authorization_header) = parts.headers.get(USER_AGENT) {
             let header_value = authorization_header.to_str().unwrap_or("");
 
