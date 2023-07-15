@@ -1,33 +1,19 @@
 #[cfg(test)]
 #[sqlx::test]
-async fn signin_return_200(pool: sqlx::Pool<sqlx::Postgres>) {
-    #[derive(serde::Serialize, serde::Deserialize)]
-    struct Users {
-        user: crate::common::types::ResponseUserDto,
-    }
-    let (client, address, _) = crate::common::test_util::setup(pool).await;
+async fn whoami_return_200(pool: sqlx::Pool<sqlx::Postgres>) {
+    let crate::common::types::SetupResponse {
+        client, address, ..
+    } = crate::common::test_util::setup(pool).await;
 
     let params = crate::common::types::SignUpUserDto {
         email: "test@examle.com".to_string(),
         password: "12345678".to_string(),
     };
 
-    client
-        .post(&format!("{}/api/v1/users/signup", &address))
-        .json(&params)
-        .send()
-        .await
-        .expect("Failed to signup");
-
-    let signin_response = client
-        .post(&format!("{}/api/v1/users/signin", &address))
-        .json(&params)
-        .send()
-        .await
-        .expect("Failed to login")
-        .json::<Users>()
-        .await
-        .expect("Unable to deserialize response");
+    let signin_response = crate::common::user_test_utils::user_test_utils::create_and_login_user(
+        &client, &address, params,
+    )
+    .await;
 
     let response = client
         .get(&format!("{}/api/v1/users/whoami", &address))

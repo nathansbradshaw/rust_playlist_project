@@ -3,7 +3,9 @@ use crate::common;
 #[cfg(test)]
 #[sqlx::test]
 async fn register_return_400_bad_request(pool: sqlx::Pool<sqlx::Postgres>) {
-    let (client, address, _) = common::test_util::setup(pool).await;
+    let crate::common::types::SetupResponse {
+        client, address, ..
+    } = crate::common::test_util::setup(pool).await;
 
     let response = client
         .post(&format!("{}/api/v1/users/signup", &address))
@@ -22,7 +24,9 @@ async fn register_return_400_bad_request(pool: sqlx::Pool<sqlx::Postgres>) {
 #[cfg(test)]
 #[sqlx::test]
 async fn register_return_400_bad_email(pool: sqlx::Pool<sqlx::Postgres>) {
-    let (client, address, _) = common::test_util::setup(pool).await;
+    let crate::common::types::SetupResponse {
+        client, address, ..
+    } = crate::common::test_util::setup(pool).await;
     let params = common::types::SignUpUserDto {
         email: "@examle.com".to_string(),
         password: "123456789".to_string(),
@@ -46,7 +50,9 @@ async fn register_return_400_bad_email(pool: sqlx::Pool<sqlx::Postgres>) {
 #[cfg(test)]
 #[sqlx::test]
 async fn register_return_400_no_email(pool: sqlx::Pool<sqlx::Postgres>) {
-    let (client, address, _) = common::test_util::setup(pool).await;
+    let crate::common::types::SetupResponse {
+        client, address, ..
+    } = crate::common::test_util::setup(pool).await;
 
     let params = [("password", "12345678")];
     let response = client
@@ -69,7 +75,9 @@ async fn register_return_400_no_email(pool: sqlx::Pool<sqlx::Postgres>) {
 async fn register_return_400_bad_password(pool: sqlx::Pool<sqlx::Postgres>) {
     use crate::common::types::SignUpUserDto;
 
-    let (client, address, _) = common::test_util::setup(pool).await;
+    let crate::common::types::SetupResponse {
+        client, address, ..
+    } = crate::common::test_util::setup(pool).await;
     let params = SignUpUserDto {
         email: "test@examle.com".to_string(),
         password: "123".to_string(),
@@ -93,7 +101,9 @@ async fn register_return_400_bad_password(pool: sqlx::Pool<sqlx::Postgres>) {
 #[cfg(test)]
 #[sqlx::test]
 async fn register_return_400_no_password(pool: sqlx::Pool<sqlx::Postgres>) {
-    let (client, address, _) = common::test_util::setup(pool).await;
+    let crate::common::types::SetupResponse {
+        client, address, ..
+    } = crate::common::test_util::setup(pool).await;
     let params = [("email", "test")];
     let response = client
         .post(&format!("{}/api/v1/users/signup", &address))
@@ -113,7 +123,9 @@ async fn register_return_400_no_password(pool: sqlx::Pool<sqlx::Postgres>) {
 #[cfg(test)]
 #[sqlx::test]
 async fn register_return_200(pool: sqlx::Pool<sqlx::Postgres>) {
-    let (client, address, _) = common::test_util::setup(pool).await;
+    let crate::common::types::SetupResponse {
+        client, address, ..
+    } = crate::common::test_util::setup(pool).await;
 
     let params = common::types::SignUpUserDto {
         email: "test@examle.com".to_string(),

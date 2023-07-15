@@ -1,28 +1,28 @@
 pub mod types;
+pub mod user_test_utils;
 use playlist_project::app::app;
-use reqwest::Client;
 
 pub mod test_util {
-    use super::*;
+    use super::{types::SetupResponse, *};
     use axum::Router;
     use playlist_project::config::{AppConfig, CargoEnv};
 
     use sqlx::Pool;
     use std::{net::TcpListener, sync::Arc};
 
-    pub async fn setup(pool: sqlx::Pool<sqlx::Postgres>) -> (Client, String, Pool<sqlx::Postgres>) {
+    pub async fn setup(pool: sqlx::Pool<sqlx::Postgres>) -> SetupResponse {
         let (app, address, listener, pool) = app_setup(pool).await;
 
         start_test_server(listener, app).await;
-        (
-            reqwest::Client::builder()
+        SetupResponse {
+            client: reqwest::Client::builder()
                 .cookie_store(true)
                 .user_agent("Value")
                 .build()
                 .expect("Failed building client"),
-            address,
-            pool,
-        )
+            address: address,
+            pool: pool,
+        }
     }
 
     pub async fn app_setup(

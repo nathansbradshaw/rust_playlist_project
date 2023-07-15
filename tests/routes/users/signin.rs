@@ -3,7 +3,9 @@ use crate::common;
 #[cfg(test)]
 #[sqlx::test]
 async fn signin_return_400_bad_request(pool: sqlx::Pool<sqlx::Postgres>) {
-    let (client, address, _) = common::test_util::setup(pool).await;
+    let common::types::SetupResponse {
+        client, address, ..
+    } = common::test_util::setup(pool).await;
 
     let response = client
         .post(&format!("{}/api/v1/users/signin", &address))
@@ -22,7 +24,9 @@ async fn signin_return_400_bad_request(pool: sqlx::Pool<sqlx::Postgres>) {
 #[cfg(test)]
 #[sqlx::test]
 async fn signin_return_400_bad_email(pool: sqlx::Pool<sqlx::Postgres>) {
-    let (client, address, _) = common::test_util::setup(pool).await;
+    let common::types::SetupResponse {
+        client, address, ..
+    } = common::test_util::setup(pool).await;
     let params = common::types::SignUpUserDto {
         email: "@examle.com".to_string(),
         password: "123456789".to_string(),
@@ -48,7 +52,9 @@ async fn signin_return_400_bad_email(pool: sqlx::Pool<sqlx::Postgres>) {
 async fn signin_return_400_bad_password(pool: sqlx::Pool<sqlx::Postgres>) {
     use crate::common::types::SignUpUserDto;
 
-    let (client, address, _) = common::test_util::setup(pool).await;
+    let common::types::SetupResponse {
+        client, address, ..
+    } = common::test_util::setup(pool).await;
     let params = SignUpUserDto {
         email: "test@examle.com".to_string(),
         password: "123".to_string(),
@@ -72,7 +78,9 @@ async fn signin_return_400_bad_password(pool: sqlx::Pool<sqlx::Postgres>) {
 #[cfg(test)]
 #[sqlx::test]
 async fn signin_return_200(pool: sqlx::Pool<sqlx::Postgres>) {
-    let (client, address, _) = common::test_util::setup(pool).await;
+    let common::types::SetupResponse {
+        client, address, ..
+    } = common::test_util::setup(pool).await;
 
     let params = common::types::SignUpUserDto {
         email: "test@examle.com".to_string(),
