@@ -1,63 +1,63 @@
-use axum::{Extension, Router};
+use std::sync::Arc;
 
+use axum::{http::Request, Extension, Router};
+
+use crate::{
+    config::AppConfig,
+    server::{api, health_check, services::Services},
+};
 use sqlx::PgPool;
 use tower::ServiceBuilder;
-use tower_http::trace::TraceLayer;
+use tower_http::{
+    request_id::{MakeRequestId, RequestId},
+    trace::{DefaultMakeSpan, DefaultOnResponse, TraceLayer},
+    ServiceBuilderExt,
+};
+use tracing::Level;
+use uuid::Uuid;
 
-use crate::routes::health_check;
+#[derive(Clone)]
+struct MakeRequestUuid;
 
-pub async fn app(pool: PgPool) -> Router {
-    // enable console logging
-    use std::sync::Once;
+impl MakeRequestId for MakeRequestUuid {
+    fn make_request_id<B>(&mut self, _: &Request<B>) -> Option<RequestId> {
+        let request_id = Uuid::new_v4().to_string();
 
-    static START: Once = Once::new();
-
-    START.call_once(|| {
-        // run initialization here
-        tracing_subscriber::fmt::init();
-    });
-
-    Router::new()
-        .layer(ServiceBuilder::new().layer(TraceLayer::new_for_http()))
-        .layer(Extension(pool))
-        .nest("/api", health_check::routes())
+        Some(RequestId::new(request_id.parse().unwrap()))
+    }
 }
 
-#[cfg(test)]
-pub mod test_util_app {
-    use std::net::TcpListener;
+pub async fn app(pool: PgPool, config: Arc<AppConfig>) -> Router {
+    // enable console logging
+    // use std::sync::Once;
 
-    use axum::Router;
-    use sqlx::postgres::{PgConnectOptions, PgPoolOptions};
-    use sqlx::Pool;
-    use testcontainers::clients;
-    use testcontainers::images::postgres::Postgres;
+    // static START: Once = Once::new();
 
-    use super::*;
+    // START.call_once(|| {
+    //     // run initialization here
+    //     tracing_subscriber::fmt::init();
+    // });
 
-    pub async fn setup() -> (Router, String, TcpListener, Pool<sqlx::Postgres>) {
-        let docker = clients::Cli::default();
-        let postgres = docker.run(Postgres::default());
+    let services = Services::new(pool.clone(), config);
 
-        let listener = TcpListener::bind("127.0.0.1:0").expect("Failed to bind random port");
-        let port = listener.local_addr().unwrap().port();
-        let address = format!("http://127.0.0.1:{}", port);
-
-        let connection_pool = PgPoolOptions::new()
-            .acquire_timeout(std::time::Duration::from_secs(2))
-            .connect_lazy_with(
-                PgConnectOptions::new()
-                    .host("127.0.0.1")
-                    .port(postgres.get_host_port_ipv4(5432))
-                    .username("postgres")
-                    .password("password"),
-            );
-
-        (
-            app(connection_pool.clone()).await,
-            address,
-            listener,
-            connection_pool,
+    Router::new()
+        .nest("/api/v1", api::app())
+        .nest("/api/v1", health_check::routes())
+        .layer(
+            // from https://docs.rs/tower-http/0.2.5/tower_http/request_id/index.html#using-trace
+            ServiceBuilder::new()
+                .set_x_request_id(MakeRequestUuid)
+                .layer(
+                    TraceLayer::new_for_http()
+                        .make_span_with(
+                            DefaultMakeSpan::new()
+                                .include_headers(true)
+                                .level(Level::INFO),
+                        )
+                        .on_response(DefaultOnResponse::new().include_headers(true)),
+                )
+                .propagate_x_request_id(),
         )
-    }
+        .layer(Extension(pool))
+        .layer(ServiceBuilder::new().layer(Extension(services)))
 }
