@@ -1,0 +1,225 @@
+{
+	"info": {
+		"_postman_id": "6947a4b2-3368-4062-a80d-d9c99f3b1f76",
+		"name": "playlist_project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "SignUp",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"mex@example.com\",\r\n    \"password\": \"asdfasdfasdfasdf\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/v1/users/signup",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "refresh",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXhAZXhhbXBsZS5jb20iLCJ1c2VyX2lkIjoiMzkxZDMyZWItN2I1OS00NzMzLTk4NDctM2UyODg4NTZlYmM5IiwiZXhwIjoxNjg5NDQyMjczLCJpYXQiOjE2ODk0Mzg2NzN9.ADDNQCzPuPi9yXPCM-H6JIi2n5_XWYhbnP4mtfYZ3gI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/v1/users/refresh",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"refresh"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SignIn",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"mex@example.com\",\r\n    \"password\": \"asdfasdfasdfasdf\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/v1/users/signup",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update users",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXhAZXhhbXBsZS5jb20iLCJ1c2VyX2lkIjoiMzkxZDMyZWItN2I1OS00NzMzLTk4NDctM2UyODg4NTZlYmM5IiwiZXhwIjoxNjg5NDQyMjczLCJpYXQiOjE2ODk0Mzg2NzN9.ADDNQCzPuPi9yXPCM-H6JIi2n5_XWYhbnP4mtfYZ3gI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"mex@example.com\",\r\n    \"password\": \"asdfasdfasdfasdf\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/v1/users",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SignOut",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXhAZXhhbXBsZS5jb20iLCJ1c2VyX2lkIjoiMzkxZDMyZWItN2I1OS00NzMzLTk4NDctM2UyODg4NTZlYmM5IiwiZXhwIjoxNjg5NDQxMzg0LCJpYXQiOjE2ODk0Mzc3ODR9.1_Qy_mbbdGPiWL6g8dJeiVXyX9Y9KFo9hpTvN0xx9wI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/v1/users/signout",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"signout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "whoami",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXhAZXhhbXBsZS5jb20iLCJ1c2VyX2lkIjoiMzkxZDMyZWItN2I1OS00NzMzLTk4NDctM2UyODg4NTZlYmM5IiwiZXhwIjoxNjg5NDQxMzg0LCJpYXQiOjE2ODk0Mzc3ODR9.1_Qy_mbbdGPiWL6g8dJeiVXyX9Y9KFo9hpTvN0xx9wI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"mex@example.com\",\r\n    \"password\": \"asdfasdfasdfasdf,\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/v1/users/whoami",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"whoami"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

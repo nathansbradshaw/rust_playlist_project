@@ -1,9 +1,9 @@
-use crate::common;
-
 #[cfg(test)]
 #[sqlx::test]
 async fn health_check_works(pool: sqlx::Pool<sqlx::Postgres>) {
-    let (client, address, _) = common::test_util::setup(pool).await;
+    let crate::common::types::SetupResponse {
+        client, address, ..
+    } = crate::common::test_util::setup(pool).await;
 
     let response = client
         .get(&format!("{}/api/v1/health", &address))
