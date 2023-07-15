@@ -6,11 +6,13 @@ pub mod test_util {
     use super::*;
     use axum::Router;
     use playlist_project::config::{AppConfig, CargoEnv};
+
     use sqlx::Pool;
     use std::{net::TcpListener, sync::Arc};
 
     pub async fn setup(pool: sqlx::Pool<sqlx::Postgres>) -> (Client, String, Pool<sqlx::Postgres>) {
         let (app, address, listener, pool) = app_setup(pool).await;
+
         start_test_server(listener, app).await;
         (
             reqwest::Client::builder()
